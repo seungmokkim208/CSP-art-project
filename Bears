@@ -1,41 +1,49 @@
 import turtle, random
 
+
 # screen setup
 s = turtle.Screen()
 s.setup(900, 650)
 s.title("Charity Poster")
 s.tracer(False)
 
+
 pen = turtle.Turtle()
 pen.hideturtle()
 pen.speed(0)
+
 
 anim = turtle.Turtle()
 anim.hideturtle()
 anim.speed(0)
 
-# custimization
+
+# set up the user input at start of code
 org = s.textinput("Poster", "Organization name:") or "Community Care"
 word = s.textinput("Poster", "One word (kindness/synonym for kindness):") or "kindness"
 date = s.textinput("Poster", "Event date:")
 
-# lists(for future use in the themes, messages and hearts)
+
+# lists(for future use for color in the themes, messages and hearts)
 themes = [("#bfe9ff", "#2a9df4", "#0b4f6c"),
           ("#c9f0ff", "#1c7ed6", "#0b2948"),
           ("#d3f9d8", "#38d9a9", "#087f5b")]
 theme_i = 0
-
+#messages of poster
 msgs = ["Small actions for Big impacts.",
         "Together, we make change.",
         "Your kindness matters.",
         "A little care goes a long way."]
 
+
 hearts = []  # x, y, size, color
+
 
 # functions to make shapes easier to render and reuse
 def circle(x, y, r, c):
     pen.penup(); pen.goto(x, y - r); pen.pendown()
     pen.color(c); pen.begin_fill(); pen.circle(r); pen.end_fill()
+
 
 def rect(x, y, w, h, c):
     pen.penup(); pen.goto(x, y); pen.pendown()
@@ -44,14 +52,16 @@ def rect(x, y, w, h, c):
         pen.forward(w); pen.left(90); pen.forward(h); pen.left(90)
     pen.end_fill()
 
+
 def write_center(text, y, size, c, bold=True):
     pen.penup(); pen.goto(0, y)
     pen.color(c)
     pen.write(text, align="center",
               font=("Arial", size, "bold" if bold else "normal"))
 
+
 def bear(x, y, fur):
-    # head ,ears, snout, eyes, nose
+    # head ,ears, snout, eyes, nose of the bears on poster
     circle(x, y, 30, fur)
     circle(x-24, y+24, 13, fur)
     circle(x+24, y+24, 13, fur)
@@ -60,32 +70,38 @@ def bear(x, y, fur):
     circle(x+10, y+6, 3, "#222")
     circle(x, y-6, 4, "#6b3f2a")
 
+
 def draw_poster():
     pen.clear()
     bg, accent, dark = themes[theme_i]
     s.bgcolor(bg)
 
-    # border
+
+    # border of poster
     pen.pensize(4); pen.color(dark)
     pen.penup(); pen.goto(-420, -290); pen.pendown()
     for _ in range(2):
         pen.forward(840); pen.left(90)
         pen.forward(560); pen.left(90)
 
-    # logo
+
+    # logo on the top of screen
     circle(0, 220, 30, "white")
     circle(0, 220, 15, "pink")
 
-    # text
+
+    # text on screen
     write_center(org, 160, 16, dark, bold=False)
     write_center("GIVE A LITTLE,", 110, 36, dark)
     write_center("HELP A LOT", 70, 36, dark)
+
 
     # divider line
     pen.pensize(4); pen.color(accent)
     pen.penup(); pen.goto(-260, 40); pen.pendown(); pen.goto(260, 40)
 
-    # message
+
+    # another message
     msg = random.choice(msgs)
     if len(word) <= 6:
         msg += " You’re powerful."
@@ -93,14 +109,17 @@ def draw_poster():
     write_center("Show " + word.lower() + " today.", -25, 18, dark, bold=False)
     write_center("Event Date: " + date, -70, 16, dark, bold=False)
 
-    # bottom and the bears
+
+    # bottom of poster and the bears
     rect(-450, -320, 900, 140, "white")
     for bx, fur in [(-280, "#d39c62"), (-120, "#c7834b"), (60, "#b8744a"), (250, "#d9a574")]:
         bear(bx, -220, fur)
 
+
     s.update()
 
-# events
+
+# events of the poster
 def draw_heart(t, x, y, size, c):
     t.color(c)
     t.penup(); t.goto(x, y); t.pendown()
@@ -114,9 +133,14 @@ def draw_heart(t, x, y, size, c):
     t.end_fill()
     t.setheading(0)
 
+
 def click(x, y):
     bg, accent, dark = themes[theme_i]
     hearts.append([x, y, random.randint(12, 24), random.choice(["pink", dark, "white"])])
+
+
+#animations
+
 
 def animate():
     anim.clear()
@@ -128,24 +152,29 @@ def animate():
     s.update()
     s.ontimer(animate, 40)
 
+
 def theme():
     global theme_i
     theme_i = (theme_i + 1) % len(themes)
     draw_poster()
 
+
 def redraw():
     hearts.clear()
     draw_poster()
 
+
 def quit_prog():
     s.bye()
 
-# commands that will allow for interaction
+
+# allow for the user to interact as the artwork is happening
 s.listen()
 s.onclick(click)
 s.onkey(theme, "t"); s.onkey(theme, "T")
 s.onkey(redraw, "r"); s.onkey(redraw, "R")
 s.onkey(quit_prog, "q"); s.onkey(quit_prog, "Q")
+
 
 draw_poster()
 animate()
